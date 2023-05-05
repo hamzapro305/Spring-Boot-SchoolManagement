@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -23,7 +22,7 @@ public class StudentController {
         this.studentService = studentService;
     }
 
-    @GetMapping("/getStudents")
+    @GetMapping(value = "/getStudents")
     public ResponseEntity<?> getStudents(@RequestParam(defaultValue = "0", required = true) int Page){
 
         Map<String, Object> response = new HashMap<>();
@@ -32,17 +31,6 @@ public class StudentController {
         response.put("students", this.studentService.getAllStudents(Page));
 
         return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    @PostMapping(value = "/addStudent")
-    public ResponseEntity<?> addStudent(@Valid @RequestBody Student std){
-        if (std.getStudentId() != null) {
-            return new ResponseEntity<>(
-                    new ApiResponse("Cannot create a student with a specified ID", false),
-                    HttpStatus.BAD_REQUEST
-            );
-        }
-        return new ResponseEntity<>(this.studentService.addStudent(std), HttpStatus.OK);
     }
 
     @GetMapping("/getStudentById/{StudentId}")
@@ -54,6 +42,17 @@ public class StudentController {
             );
         }
         return new ResponseEntity<>(this.studentService.getStudentById(StudentId), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/addStudent")
+    public ResponseEntity<?> addStudent(@Valid @RequestBody Student std){
+        if (std.getStudentId() != null) {
+            return new ResponseEntity<>(
+                    new ApiResponse("Cannot create a student with a specified ID", false),
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+        return new ResponseEntity<>(this.studentService.addStudent(std), HttpStatus.OK);
     }
 
 }
