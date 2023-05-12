@@ -4,3 +4,8 @@ app:
     username: postgres
     password: password
     pool-size: 30
+spring:
+  security:
+    user:
+      name: admin
+      password: pass123

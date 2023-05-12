@@ -16,8 +16,8 @@ public class StudentService {
         this.studentRepo = studentRepo;
     }
 
-    public List<Student> getAllStudents(int Page){
-        return this.studentRepo.selectAllStudents(Page);
+    public List<Student> getAllStudents(int Page, Integer Size){
+        return this.studentRepo.selectAllStudents(Page, Size);
     }
 
     public Student addStudent(Student std) {
@@ -27,5 +27,13 @@ public class StudentService {
         return this.studentRepo.getStudentById(id);
     }
 
-    public Integer getTotalPages() { return this.studentRepo.getTotalPages(); }
+    public Student getStudentByEmail(String Email){
+        return this.studentRepo.getStudentByEmail(Email);
+    }
+
+    public Integer getTotalPages(Integer Size) { return this.studentRepo.getTotalPages(Size); }
+
+    public void deleteStudent(UUID uid) {
+        this.studentRepo.deleteStudent(uid);
+    }
 }

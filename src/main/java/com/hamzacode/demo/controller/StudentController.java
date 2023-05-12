@@ -1,58 +1,91 @@
 package com.hamzacode.demo.controller;
 
+import com.hamzacode.demo.dto.StudentResponseDTO;
+import com.hamzacode.demo.model.UserRole;
+import com.hamzacode.demo.payloads.ApiErrorResponse;
 import com.hamzacode.demo.payloads.ApiResponse;
 import com.hamzacode.demo.service.StudentService;
 import com.hamzacode.demo.model.Student;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/v1/student")
+@RequiredArgsConstructor
 public class StudentController {
 
     public final StudentService studentService;
-
-    public StudentController(StudentService studentService) {
-        this.studentService = studentService;
-    }
+    public final ModelMapper modelMapper;
 
     @GetMapping(value = "/getStudents")
-    public ResponseEntity<?> getStudents(@RequestParam(defaultValue = "0", required = true) int Page){
+    public ResponseEntity<?> getStudents(
+            @RequestParam(defaultValue = "0", required = true) int Page,
+            @RequestParam(defaultValue = "2", required = true) int Size
+        ){
 
-        Map<String, Object> response = new HashMap<>();
+        if(Page < 0) {
+            ApiErrorResponse resp = new ApiErrorResponse("Page no cannot be less than zero");
+            return resp.getResponse(HttpStatus.NOT_ACCEPTABLE);
+        }
+        if(Size < 1) {
+            ApiErrorResponse resp = new ApiErrorResponse("Size cannot be less than 1");
+            return resp.getResponse(HttpStatus.NOT_ACCEPTABLE);
+        }
 
-        response.put("allPages", this.studentService.getTotalPages());
-        response.put("students", this.studentService.getAllStudents(Page));
+        Map<String, Object> Data = new HashMap<>();
 
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        Data.put("totalPages", this.studentService.getTotalPages(Size));
+        List<StudentResponseDTO> allStudents = new ArrayList<>();
+        for(Student std: this.studentService.getAllStudents(Page, Size)) {
+            allStudents.add(
+                    modelMapper.map(std, StudentResponseDTO.class)
+            );
+        }
+        Data.put("students", allStudents);
+
+        ApiResponse resp = new ApiResponse(Data);
+
+        return resp.getResponse(HttpStatus.OK);
     }
 
     @GetMapping("/getStudentById/{StudentId}")
     public ResponseEntity<?> getStudentById(@PathVariable UUID StudentId) {
         if(StudentId == null){
-            return new ResponseEntity<>(
-                    new ApiResponse("StudentId is null", false),
-                    HttpStatus.BAD_REQUEST
-            );
+            ApiErrorResponse resp = new ApiErrorResponse("StudentId is null");
+            return resp.getResponse(HttpStatus.NOT_ACCEPTABLE);
         }
-        return new ResponseEntity<>(this.studentService.getStudentById(StudentId), HttpStatus.OK);
+        Student stdData = this.studentService.getStudentById(StudentId);
+        if(stdData == null){
+            ApiErrorResponse resp = new ApiErrorResponse("Student Not Found");
+            return resp.getResponse(HttpStatus.NOT_FOUND);
+        }
+        final StudentResponseDTO std = modelMapper.map(stdData, StudentResponseDTO.class);
+        ApiResponse resp = new ApiResponse(std);
+        return resp.getResponse(HttpStatus.OK);
     }
 
     @PostMapping(value = "/addStudent")
     public ResponseEntity<?> addStudent(@Valid @RequestBody Student std){
         if (std.getStudentId() != null) {
-            return new ResponseEntity<>(
-                    new ApiResponse("Cannot create a student with a specified ID", false),
-                    HttpStatus.BAD_REQUEST
-            );
+            ApiErrorResponse resp = new ApiErrorResponse("Cannot create a student with a specified ID");
+            return resp.getResponse(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(this.studentService.addStudent(std), HttpStatus.OK);
+        std.getRoles().add(UserRole.ROLE_STUDENT);
+        ApiResponse resp = new ApiResponse(this.studentService.addStudent(std));
+        return resp.getResponse(HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/deleteStudent")
+    public ResponseEntity<?> deleteStudent(@RequestParam(required = true) UUID uid){
+        this.studentService.deleteStudent(uid);
+        ApiResponse resp = new ApiResponse("Student Deleted");
+        return resp.getResponse(HttpStatus.OK);
     }
 
 }

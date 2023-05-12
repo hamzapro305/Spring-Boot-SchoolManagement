@@ -1,30 +1,20 @@
 package com.hamzacode.demo.payloads;
 
+import lombok.Data;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+@Data
 public class ApiResponse {
-    private String message;
-    private boolean success;
+    private Object data;
+    private boolean success = true;
 
-    public ApiResponse() {
+    public ApiResponse(Object data){
+        this.data = data;
     }
 
-    public ApiResponse(String message, boolean success) {
-        this.message = message;
-        this.success = success;
+    public ResponseEntity<ApiResponse> getResponse(HttpStatus httpStatus){
+            return new ResponseEntity<>(this, httpStatus);
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
 }
