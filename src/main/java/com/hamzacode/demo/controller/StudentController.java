@@ -2,12 +2,11 @@ package com.hamzacode.demo.controller;
 
 import com.hamzacode.demo.dto.StudentResponseDTO;
 import com.hamzacode.demo.model.UserRole;
-import com.hamzacode.demo.payloads.ApiErrorResponse;
-import com.hamzacode.demo.payloads.ApiResponse;
+import com.hamzacode.demo.payloads.*;
 import com.hamzacode.demo.service.StudentService;
 import com.hamzacode.demo.model.Student;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +16,11 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api/v1/student")
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class StudentController {
 
-    public final StudentService studentService;
-    public final ModelMapper modelMapper;
+    private final StudentService studentService;
+    private final ModelMapper modelMapper;
 
     @GetMapping(value = "/getStudents")
     public ResponseEntity<?> getStudents(
@@ -68,6 +67,18 @@ public class StudentController {
         final StudentResponseDTO std = modelMapper.map(stdData, StudentResponseDTO.class);
         ApiResponse resp = new ApiResponse(std);
         return resp.getResponse(HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/updatePhotoURL")
+    public ResponseEntity<?> updatePhoto(@Valid @RequestBody UpdateImagePayload body){
+        boolean status = this.studentService.updatePhotoURL(body.getPhotoURL(), body.getUid());
+        if(status){
+            ApiResponse resp = new ApiResponse("Photo url updated");
+            return resp.getResponse(HttpStatus.OK);
+        }else {
+            ApiErrorResponse resp = new ApiErrorResponse("Server Error");
+            return resp.getResponse(HttpStatus.OK);
+        }
     }
 
     @PostMapping(value = "/addStudent")

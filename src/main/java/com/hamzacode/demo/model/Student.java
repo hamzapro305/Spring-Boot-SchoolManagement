@@ -47,6 +47,8 @@ public class Student {
     @Size(min = 8, message = "Minimum password length: 8 characters")
     private String password;
 
+    private String photoURL;
+
     List<UserRole> roles = new ArrayList<>();
 
 }

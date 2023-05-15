@@ -3,47 +3,41 @@ package com.hamzacode.demo.repository;
 import com.hamzacode.demo.exception.CustomException;
 import com.hamzacode.demo.model.Student;
 import com.hamzacode.demo.model.UserRole;
-import org.apache.catalina.User;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Repository
+@AllArgsConstructor
 public class StudentRepo {
     private final JdbcTemplate jdbcTemplate;
-
-
-    @Autowired
-    public StudentRepo(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     public Student addStudent(Student std){
         String sql = "INSERT INTO student " +
                 "(" +
-                " studentId, " +
-                " userName, " +
-                " fullName, " +
+                " student_id, " +
+                " user_name, " +
+                " full_name, " +
                 " email, " +
                 " age, " +
                 " gender, " +
                 " password, " +
+                " photo_url, " +
                 " roles " +
                 ")" +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         UUID StudentId = UUID.randomUUID();
 
         String roles = this.rolesToString(std.getRoles());
 
-        Object[] params = {StudentId, std.getUserName(), std.getFullName(), std.getEmail(), std.getAge(), std.getGender(), std.getPassword(), roles};
+        Object[] params = {StudentId, std.getUserName(), std.getFullName(), std.getEmail(), std.getAge(), std.getGender(), std.getPassword(), std.getPhotoURL(),roles};
 
         jdbcTemplate.update(sql, params);
 
@@ -53,7 +47,7 @@ public class StudentRepo {
     }
 
     public void deleteStudent(UUID uid){
-        String sql = "DELETE FROM student WHERE studentId = ?";
+        String sql = "DELETE FROM student WHERE student_id = ?";
 
         Object[] args = new Object[] {uid};
 
@@ -68,16 +62,17 @@ public class StudentRepo {
     public Student getStudentById(UUID id){
         String sql = "" +
                 " SELECT " +
-                " studentId, " +
-                " userName, " +
-                " fullName, " +
+                " student_id, " +
+                " user_name, " +
+                " full_name, " +
                 " email, " +
+                " photo_url, " +
                 " age, " +
                 " gender, " +
                 " password, " +
                 " roles " +
                 " FROM student " +
-                " WHERE studentId = ? ";
+                " WHERE student_id = ? ";
         Object[] params = {id};
 
         List<Student> students = jdbcTemplate.query(sql, params, mapStudentFromDb());
@@ -89,10 +84,11 @@ public class StudentRepo {
     public Student getStudentByEmail(String Email){
         String sql = "" +
                 " SELECT " +
-                " studentId, " +
-                " userName, " +
-                " fullName, " +
+                " student_id, " +
+                " user_name, " +
+                " full_name, " +
                 " email, " +
+                " photo_url, " +
                 " age, " +
                 " gender, " +
                 " password, " +
@@ -124,11 +120,12 @@ public class StudentRepo {
     public List<Student> selectAllStudents(Integer Page, Integer Size) {
         String sql = "" +
                 " SELECT " +
-                " studentId, " +
-                " userName, " +
-                " fullName, " +
+                " student_id, " +
+                " user_name, " +
+                " full_name, " +
                 " email, " +
                 " age, " +
+                " photo_url, " +
                 " gender, " +
                 " password, " +
                 " roles " +
@@ -146,6 +143,15 @@ public class StudentRepo {
         );
     }
 
+    public boolean setPhotoURL(String photoURL, UUID uid){
+        String sql = " UPDATE student " +
+                " SET photo_url = ? " +
+                " WHERE student_id = ?";
+        Object[] params = new Object[] {photoURL, uid};
+
+        return jdbcTemplate.update(sql, params) == 1;
+    }
+
     private Integer getStudentCount(){
         String sql = "SELECT COUNT(*) FROM student";
         return jdbcTemplate.queryForObject(sql, Integer.class);
@@ -153,11 +159,12 @@ public class StudentRepo {
 
     private RowMapper<Student> mapStudentFromDb() {
         return (resultSet, i) -> {
-            String studentIdStr = resultSet.getString("studentId");
+            String studentIdStr = resultSet.getString("student_id");
             UUID studentId = UUID.fromString(studentIdStr);
 
-            String userName = resultSet.getString("userName");
-            String fullName = resultSet.getString("fullName");
+            String userName = resultSet.getString("user_name");
+            String photoURL = resultSet.getString("photo_url");
+            String fullName = resultSet.getString("full_name");
             String email = resultSet.getString("email");
             int age = resultSet.getInt("age");
             String gender = resultSet.getString("gender").toUpperCase();
@@ -165,7 +172,7 @@ public class StudentRepo {
             String strRoles = resultSet.getString("roles");
             List<UserRole> roles = this.stringToRoles(strRoles);
 
-            return new Student(studentId, userName, fullName, email, age, gender, password, roles);
+            return new Student(studentId, userName, fullName, email, age, gender, password, photoURL, roles);
         };
     }
 
