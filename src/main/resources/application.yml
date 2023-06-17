@@ -4,6 +4,8 @@ app:
     username: postgres
     password: password
     pool-size: 30
+server:
+  port: 3001
 spring:
   security:
     user:
