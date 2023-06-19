@@ -1,13 +1,8 @@
-app:
-  datasource:
-    jdbc-url: jdbc:postgresql://localhost:5432/hamzademo
-    username: postgres
-    password: password
-    pool-size: 30
 server:
   port: 3001
+
 spring:
-  security:
-    user:
-      name: admin
-      password: pass123
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/SchoolManagement
+      auto-index-creation: true
