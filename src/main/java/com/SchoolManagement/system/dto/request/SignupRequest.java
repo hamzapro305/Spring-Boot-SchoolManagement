@@ -1,22 +1,21 @@
-package com.SchoolManagement.system.model;
+package com.SchoolManagement.system.dto.request;
 
-import jakarta.validation.constraints.*;
+import com.SchoolManagement.system.model.Role;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Set;
 
-@Document(collection = "User")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class User {
-    @Id
-    private String userId;
+public class SignupRequest {
 
     @NotEmpty(message = "User name is required")
     @Size(min = 6, message = "User name is less than 6 characters")
@@ -26,7 +25,6 @@ public class User {
     @NotEmpty(message = "Email is required")
     @Email(message = "Invalid email address")
     @Size(max = 50, message = "email is too large")
-    @Indexed(unique = true, sparse = true)
     private String email;
 
     @NotEmpty(message = "Password is blank")
@@ -34,17 +32,7 @@ public class User {
     @Size(min = 8, message = "Minimum password length: 8 characters")
     private String password;
 
-    @NotNull(message = "Age is required")
-    @PositiveOrZero(message = "Age cannot be negative")
-    private Integer age;
-
-    @NotEmpty(message = "Gender is required")
-    @Pattern(regexp = "MALE|FEMALE", message = "Gender Values are {MALE, FEMALE} ")
-    private String gender;
-
-    private String photoURL;
-
-    @NotNull(message = "Role is Required")
+    @NotEmpty(message = "No Roles Provided")
     private Set<Role> roles;
 
 }

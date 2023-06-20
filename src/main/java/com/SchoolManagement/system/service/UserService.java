@@ -23,5 +23,8 @@ public class UserService {
     public User getByName(String userName) {
         return this.userRepo.findByUserName(userName);
     }
+    public User getByEmail(String email) {
+        return this.userRepo.findByEmail(email);
+    }
 
 }
