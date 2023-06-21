@@ -1,6 +1,7 @@
 package com.SchoolManagement.system.dto;
 
 import com.SchoolManagement.system.model.Role;
+import com.SchoolManagement.system.model.UserType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,4 +19,5 @@ public class UserDto {
     private String gender;
     private String photoURL;
     private Set<Role> roles;
+    private UserType type;
 }

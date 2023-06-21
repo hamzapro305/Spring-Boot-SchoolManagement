@@ -47,4 +47,7 @@ public class User {
     @NotNull(message = "Role is Required")
     private Set<Role> roles;
 
+    @Pattern(regexp = "ADMIN|TEACHER|STUDENT", message = "Type Values are {ADMIN, TEACHER, STUDENT} ")
+    private UserType type;
+
 }

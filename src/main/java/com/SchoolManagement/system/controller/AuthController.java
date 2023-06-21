@@ -6,6 +6,7 @@ import com.SchoolManagement.system.dto.request.SignupRequest;
 import com.SchoolManagement.system.model.User;
 import com.SchoolManagement.system.service.UserService;
 import com.SchoolManagement.system.service.jwt.JwtService;
+import com.SchoolManagement.system.service.jwt.JwtUserDetailsServiceImpl;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -14,21 +15,25 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
 @AllArgsConstructor
 public class AuthController {
-    private final UserDetailsService userDetailsService;
+    private final JwtUserDetailsServiceImpl userDetailsService;
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder encoder;
@@ -36,11 +41,10 @@ public class AuthController {
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-        this.doAuthenticate(loginRequest.getEmail(), loginRequest.getPassword());
-        UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getEmail());
-        String token = this.jwtService.generateToken(userDetails);
-        var resp = new HashMap<String, Object>();
-        resp.put("user", userDetails);
+        UserDetails user = userDetailsService.loadUserByUsername(loginRequest.getEmail());
+        Authentication auth = this.doAuthenticate(user, loginRequest.getPassword());
+        String token = this.jwtService.generateJwtToken(auth);
+        Map<String, Object> resp = new HashMap<>();
         resp.put("token", token);
         return ResponseEntity.ok(resp);
     }
@@ -54,11 +58,11 @@ public class AuthController {
         return ResponseEntity.ok(resp);
     }
 
-    private void doAuthenticate(String email, String password) {
+    private Authentication doAuthenticate(UserDetails user, String password) {
         try {
-            authenticationManager.authenticate(
+            return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            email, password
+                            user.getUsername(), password, user.getAuthorities()
                     )
             );
         } catch (BadCredentialsException e) {

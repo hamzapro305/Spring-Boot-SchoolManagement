@@ -1,29 +1,26 @@
 package com.SchoolManagement.system.controller;
 
+import com.SchoolManagement.system.dto.UserDto;
 import com.SchoolManagement.system.model.User;
 import com.SchoolManagement.system.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/user")
 @AllArgsConstructor
 public class UserController {
 
-    private UserService userService;
+    private final UserService userService;
 
-    @PostMapping("/addUser")
-    public User addUser(@RequestBody @Valid User user) {
-        return userService.save(user);
-    }
     @GetMapping("/getUser")
-    public User getUserByUserName(@RequestParam("userName") String userName){
-        return this.userService.getByName(userName);
-    }
-    @GetMapping("/getAllUser")
-    public List<User> getAllUser(){
-        return userService.getAllUsers();
+    public UserDto getUserByUserName(@RequestParam("userName") String userName){
+        User user =  this.userService.getByName(userName);
+        ModelMapper m = new ModelMapper();
+        return m.map(user, UserDto.class);
     }
 }
