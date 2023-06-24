@@ -10,7 +10,7 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class UserService {
-    private UserRepo userRepo;
+    private final UserRepo userRepo;
 
     public User save(User user) {
         return this.userRepo.insert(user);
@@ -23,6 +23,7 @@ public class UserService {
     public User getByName(String userName) {
         return this.userRepo.findByUserName(userName);
     }
+
     public User getByEmail(String email) {
         return this.userRepo.findByEmail(email);
     }

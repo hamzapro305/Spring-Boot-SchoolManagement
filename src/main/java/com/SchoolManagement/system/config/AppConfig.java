@@ -31,7 +31,6 @@ public class AppConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-<<<<<<< Updated upstream
         http
             .csrf(csrf -> csrf.disable())
             .exceptionHandling(exception -> exception.authenticationEntryPoint(point))
@@ -41,23 +40,12 @@ public class AppConfig {
                     .requestMatchers("/api/student/**").hasAuthority("ROLE_STUDENT")
                     .requestMatchers("/api/teacher/**").hasAuthority("ROLE_TEACHER")
                     .requestMatchers("/api/user/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_TEACHER", "ROLE_STUDENT")
-                    .requestMatchers("/api/auth/**", "/api/test/**").permitAll()
+                    .requestMatchers("/api/auth/**").permitAll()
+                    .requestMatchers("/api/test/**").permitAll()
+                    .requestMatchers("/api/basic-service/**").permitAll()
                     .anyRequest().authenticated()
             );
         http.authenticationProvider(authenticationProvider());
-=======
-        http.csrf(csrf -> csrf.disable())
-                .authorizeRequests()
-                .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
-                .requestMatchers("/api/student/**").hasAuthority("ROLE_STUDENT")
-                .requestMatchers("/api/teacher/**").hasAuthority("ROLE_TEACHER")
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/basic-service/**").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .exceptionHandling(ex -> ex.authenticationEntryPoint(point))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
->>>>>>> Stashed changes
         http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

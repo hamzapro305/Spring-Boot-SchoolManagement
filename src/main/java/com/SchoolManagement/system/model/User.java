@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Set;
 
-@Document(collection = "User")
+@Document(collection = "Users")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -22,6 +22,8 @@ public class User {
     @Size(min = 6, message = "User name is less than 6 characters")
     @Indexed(unique = true)
     private String userName;
+
+    private String fullName;
 
     @NotEmpty(message = "Email is required")
     @Email(message = "Invalid email address")
@@ -47,7 +49,7 @@ public class User {
     @NotNull(message = "Role is Required")
     private Set<Role> roles;
 
-    @Pattern(regexp = "ADMIN|TEACHER|STUDENT", message = "Type Values are {ADMIN, TEACHER, STUDENT} ")
+//    @Pattern(regexp = "ADMIN|TEACHER|STUDENT", message = "Type Values are {ADMIN, TEACHER, STUDENT} ")
     private UserType type;
 
 }
