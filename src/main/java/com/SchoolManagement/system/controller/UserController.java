@@ -3,7 +3,6 @@ package com.SchoolManagement.system.controller;
 import com.SchoolManagement.system.dto.UserDto;
 import com.SchoolManagement.system.model.User;
 import com.SchoolManagement.system.service.UserService;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.*;
