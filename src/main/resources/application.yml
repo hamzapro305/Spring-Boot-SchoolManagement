@@ -1,8 +1,5 @@
 server:
   port: 3001
-
 spring:
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/SchoolManagement
-      auto-index-creation: true
+  profiles:
+    active: ${ENV:prod}
