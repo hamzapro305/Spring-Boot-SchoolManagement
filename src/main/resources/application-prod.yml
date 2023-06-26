@@ -1,10 +1,5 @@
 spring:
   data:
     mongodb:
-      port: 7737
-      database: SchoolManagement
-      username: mongo
-      host: containers-us-west-14.railway.app
-      password: sc49KPsyl0D9k8O5kKgZ
-      connection-string: mongodb://mongo:sc49KPsyl0D9k8O5kKgZ@containers-us-west-14.railway.app:7737/SchoolManagement
+      uri: mongodb://mongo:sc49KPsyl0D9k8O5kKgZ@containers-us-west-14.railway.app:7737/SchoolManagement
       auto-index-creation: true
