@@ -2,7 +2,6 @@ package com.SchoolManagement.system.dto.request;
 
 import com.SchoolManagement.system.model.Role;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;

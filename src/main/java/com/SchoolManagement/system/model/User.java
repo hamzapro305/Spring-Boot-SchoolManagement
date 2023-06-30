@@ -7,41 +7,34 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 @Document(collection = "Users")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class User {
+public class User implements UserDetails {
     @Id
     private String userId;
 
-    @NotEmpty(message = "User name is required")
-    @Size(min = 6, message = "User name is less than 6 characters")
     @Indexed(unique = true)
     private String userName;
 
     private String fullName;
 
-    @NotEmpty(message = "Email is required")
-    @Email(message = "Invalid email address")
-    @Size(max = 50, message = "email is too large")
-    @Indexed(unique = true, sparse = true)
+
+    @Indexed(unique = true)
     private String email;
 
-    @NotEmpty(message = "Password is blank")
-    @Size(max = 50, message = "Maximum password length: 50 characters")
-    @Size(min = 8, message = "Minimum password length: 8 characters")
     private String password;
 
-    @NotNull(message = "Age is required")
-    @PositiveOrZero(message = "Age cannot be negative")
     private Integer age;
 
-    @NotEmpty(message = "Gender is required")
-    @Pattern(regexp = "MALE|FEMALE", message = "Gender Values are {MALE, FEMALE} ")
     private String gender;
 
     private String photoURL;
@@ -49,7 +42,41 @@ public class User {
     @NotNull(message = "Role is Required")
     private Set<Role> roles;
 
-//    @Pattern(regexp = "ADMIN|TEACHER|STUDENT", message = "Type Values are {ADMIN, TEACHER, STUDENT} ")
     private UserType type;
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Set<GrantedAuthority> authorities = new HashSet<>();
+        for (Role role : roles) authorities.add(role.getAuthority());
+        return authorities;
+    }
+
+    public String getUserName() {
+        return this.userName;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

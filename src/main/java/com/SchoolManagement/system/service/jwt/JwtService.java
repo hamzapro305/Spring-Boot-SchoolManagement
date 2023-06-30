@@ -3,6 +3,7 @@ package com.SchoolManagement.system.service.jwt;
 import java.security.Key;
 import java.util.Date;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -18,7 +19,7 @@ public class JwtService {
     private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
 
     private final String jwtSecret = "asdasdasjgfvjsdahfkvjadsfhoihsfauydrtgfiouvjsopifdfyg8yu";
-    private final int jwtExpirationMs = 60 * 60 * 60;
+    public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
 
     public String generateJwtToken(Authentication authentication) {
 
@@ -27,9 +28,17 @@ public class JwtService {
         return Jwts.builder()
                 .setSubject((userPrincipal.getUsername()))
                 .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+                .setExpiration(new Date((new Date()).getTime() + JWT_TOKEN_VALIDITY * 1000))
                 .signWith(key(), SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    public String extractTokenFromRequest(HttpServletRequest request) {
+        String header = request.getHeader("Authorization");
+        if (header != null && header.startsWith("Bearer ")) {
+            return header.substring(7);
+        }
+        return null;
     }
 
     private Key key() {

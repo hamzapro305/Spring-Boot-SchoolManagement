@@ -15,7 +15,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,7 +36,7 @@ public class AuthController {
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-        UserDetails user = userDetailsService.loadUserByUsername(loginRequest.getEmail());
+        User user = userDetailsService.loadUserByUsername(loginRequest.getEmail());
         Authentication auth = this.doAuthenticate(user, loginRequest.getPassword());
         String token = this.jwtService.generateJwtToken(auth);
         Map<String, Object> resp = new HashMap<>();
@@ -54,7 +53,7 @@ public class AuthController {
         return ResponseEntity.ok(resp);
     }
 
-    private Authentication doAuthenticate(UserDetails user, String password) {
+    private Authentication doAuthenticate(User user, String password) {
         try {
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(

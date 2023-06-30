@@ -7,8 +7,6 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @SpringBootApplication
 @EnableMongoRepositories
 public class SchoolManagementApplication{
-
-
 	public static void main(String[] args) {
 		SpringApplication.run(SchoolManagementApplication.class, args);
 	}
