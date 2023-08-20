@@ -1,0 +1,22 @@
+version: "3.7"
+
+services:
+    backend:
+        build: ./backend
+        restart: always
+        ports:
+            - 3001:3001
+        depends_on:
+            - database
+        environment:
+            - MONGO_HOST=database
+            - MONGO_PORT=27017
+    database:
+        image: "mongo:4.0.27-xenial"
+        restart: always
+        expose:
+            - 27017
+
+        # If you wanna run it in your compass
+        # ports:
+        #     - 27017:27017

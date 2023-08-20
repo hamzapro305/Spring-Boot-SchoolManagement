@@ -1,5 +1,0 @@
-spring:
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/SchoolManagement
-      auto-index-creation: true

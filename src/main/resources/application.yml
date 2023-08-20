@@ -1,5 +1,0 @@
-server:
-  port: 3001
-spring:
-  profiles:
-    active: ${ENV:dev}

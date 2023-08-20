@@ -1,7 +1,0 @@
-spring:
-  data:
-    mongodb:
-      uri: mongodb://mongo:sc49KPsyl0D9k8O5kKgZ@containers-us-west-14.railway.app:7737/admin
-      database: SchoolManagement
-      authentication-database: admin
-      auto-index-creation: true
