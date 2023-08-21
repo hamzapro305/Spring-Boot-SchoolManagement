@@ -1,6 +1,9 @@
 # Stage 1: Build the Spring Boot application
 FROM maven:3.8.4-openjdk-17 AS build
+# Assigning Working Diroctory
 WORKDIR /usr/app
+COPY ./pom.xml /usr/app/
+RUN mvn install
 COPY . /usr/app
 RUN mvn package -DskipTests
 

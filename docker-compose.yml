@@ -16,7 +16,7 @@ services:
         restart: always
         expose:
             - 27017
-
-        # If you wanna run it in your compass
-        # ports:
-        #     - 27017:27017
+        volumes:
+            - ./mongo-data:/data/db
+        ports:
+            - 27017:27017

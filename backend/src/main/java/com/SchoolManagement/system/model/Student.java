@@ -11,7 +11,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Student extends User{
+public class Student extends User {
 
     private UUID studentId;
     private String grade;

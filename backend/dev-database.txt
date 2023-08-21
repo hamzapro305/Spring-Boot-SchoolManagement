@@ -1,0 +1,1 @@
+docker run -dp 27017:27017 --name mongo-general -v "C:\Users\Hamza Siddiqui\Documents\Projects\Spring-Boot-SchoolManagement\backend\mongo-data:/data/db" mongo:4.0.27-xenial

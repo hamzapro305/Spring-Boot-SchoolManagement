@@ -27,6 +27,5 @@ public class StudentController {
         Map<String, Object> resp = new HashMap<>();
         resp.put("User", user);
         return ResponseEntity.ok(resp);
-
     }
 }

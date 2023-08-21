@@ -49,7 +49,10 @@ public class AuthController {
         ModelMapper m = new ModelMapper();
         User user = m.map(signupRequest, User.class);
         user.setPassword(encoder.encode(user.getPassword()));
-        UserDto resp = m.map(userService.save(user), UserDto.class);
+        UserDto UserResp = m.map(userService.save(user), UserDto.class);
+        Map<String, Object> resp = new HashMap<>();
+        resp.put("user", UserResp);
+        resp.put("status", true);
         return ResponseEntity.ok(resp);
     }
 

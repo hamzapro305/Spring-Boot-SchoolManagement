@@ -28,4 +28,11 @@ public class UserController {
         ModelMapper m = new ModelMapper();
         return m.map(user, UserDto.class);
     }
+
+    @PutMapping("/updateUser")
+    public UserDto updateUser() {
+        
+        return null;
+    }
+
 }
