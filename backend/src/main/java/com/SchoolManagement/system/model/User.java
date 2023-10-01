@@ -27,7 +27,6 @@ public class User implements UserDetails {
 
     private String fullName;
 
-
     @Indexed(unique = true)
     private String email;
 

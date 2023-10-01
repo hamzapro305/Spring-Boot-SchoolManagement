@@ -18,7 +18,6 @@ public class UserDto {
     @NotEmpty(message = "User name is required")
     @Size(min = 6, message = "User name is less than 6 characters")
     private String userName;
-
     private String fullName;
 
     @NotEmpty(message = "Email is required")

@@ -3,7 +3,9 @@ package com.SchoolManagement.system.service.jwt;
 import java.security.Key;
 import java.util.Date;
 
+import com.SchoolManagement.system.model.User;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -15,11 +17,20 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
 @Component
+@RequiredArgsConstructor
 public class JwtService {
     private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
 
+    private final JwtUserDetailsServiceImpl jwtUserDetailsService;
+
     private final String jwtSecret = "asdasdasjgfvjsdahfkvjadsfhoihsfauydrtgfiouvjsopifdfyg8yu";
     public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
+
+    public User getUserFromJwtTokenRequest(HttpServletRequest request) {
+        String token = this.extractTokenFromRequest(request);
+        String email = this.getUserNameFromJwtToken(token);
+        return this.jwtUserDetailsService.loadUserByUsername(email);
+    }
 
     public String generateJwtToken(Authentication authentication) {
 

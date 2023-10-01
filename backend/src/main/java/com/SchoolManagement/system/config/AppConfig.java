@@ -44,7 +44,7 @@ public class AppConfig {
                     .requestMatchers("/api/auth/**").permitAll()
                     .requestMatchers("/api/test/**").permitAll()
                     .requestMatchers("/api/basic-service/**").permitAll()
-                    .anyRequest().authenticated()
+                    .anyRequest().permitAll()
             );
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);

@@ -15,16 +15,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/user")
 @AllArgsConstructor
 public class UserController {
-
-    private UserService userService;
-    private JwtUserDetailsServiceImpl jwtUserDetailsService;
     private JwtService jwtService;
 
     @GetMapping("/getUser")
     public UserDto getUserByUserName(HttpServletRequest request){
-        String token = jwtService.extractTokenFromRequest(request);
-        String email = jwtService.getUserNameFromJwtToken(token);
-        User user =  this.jwtUserDetailsService.loadUserByUsername(email);
+        User user =  this.jwtService.getUserFromJwtTokenRequest(request);
         ModelMapper m = new ModelMapper();
         return m.map(user, UserDto.class);
     }

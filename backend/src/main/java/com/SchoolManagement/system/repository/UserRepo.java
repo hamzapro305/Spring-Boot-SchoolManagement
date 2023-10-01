@@ -10,7 +10,11 @@ import java.util.List;
 
 @Repository
 public interface UserRepo extends MongoRepository<User, String> {
+
+
     User findByUserName(String userName);
+
+    // Email is the main for JWT Token
     User findByEmail(String email);
 
     @Aggregation(pipeline = { "{$group: {_id: null, count: { $sum: 1 }}}" })

@@ -17,15 +17,13 @@ import java.util.Map;
 @AllArgsConstructor
 public class StudentController {
     private final JwtService jwtService;
-    private final JwtUserDetailsServiceImpl jwtUserDetailsService;
 
     @GetMapping("/getStudentData")
     public ResponseEntity<?> getStudentData(HttpServletRequest request) {
-        String token = this.jwtService.extractTokenFromRequest(request);
-        String userName = this.jwtService.getUserNameFromJwtToken(token);
-        User user = this.jwtUserDetailsService.loadUserByUsername(userName);
+        User user = this.jwtService.getUserFromJwtTokenRequest(request);
         Map<String, Object> resp = new HashMap<>();
         resp.put("User", user);
+
         return ResponseEntity.ok(resp);
     }
 }
